@@ -11,21 +11,21 @@
     </form>
     <div id="search-results"></div>
     <script>
-      const searchForm = document.getElementById('search-form');
-      const searchResultsDiv = document.getElementById('search-results');
+      // const searchForm = document.getElementById('search-form');
+      // const searchResultsDiv = document.getElementById('search-results');
 
-      searchForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const formData = new FormData(searchForm);
-        const query = formData.get('q');
+      // searchForm.addEventListener('submit', (event) => {
+      //   event.preventDefault();
+      //   const formData = new FormData(searchForm);
+      //   const query = formData.get('q');
 
-        fetch(`/search?q=${query}`)
-          .then(response => response.text())
-          .then(searchResults => {
-            searchResultsDiv.innerText = searchResults;
-          })
-          .catch(error => console.error(error));
-      });
+      //   fetch(`/search?q=${query}`)
+      //     .then(response => response.text())
+      //     .then(searchResults => {
+      //       searchResultsDiv.innerText = searchResults;
+      //     })
+      //     .catch(error => console.error(error));
+      // });
     </script>
   </body>
 </html>
