@@ -1,42 +1,26 @@
-const express = require('express');
-const openai = require('openai');
-require('dotenv').config();
+import { config } from "dotenv"
+config()
 
-// Set up the OpenAI API credentials
-openai.apiKey = process.env.APIKEY;
+import { Configuration, OpenAIApi } from "openai"
+import readline from "readline"
 
-// Set up the Express.js app
-const app = express();
-const port = process.env.PORT || 3000;
+const openAi = new OpenAIApi(
+  new Configuration({
+    apiKey: process.env.APIKEY,
+  })
+)
 
-// Set up a route to handle the API request
-app.get('/search', (req, res) => {
-  const query = req.query.q;
-  const prompt = `Search results for ${query}:`;
-  const model = 'text-davinci-002';
-  const temperature = 0.7;
-  const maxTokens = 60;
+const userInterface = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+})
 
-  openai.Completion.create({
-    engine: model,
-    prompt: prompt,
-    temperature: temperature,
-    max_tokens: maxTokens,
-  }).then((response) => {
-    const generatedText = response.choices[0].text;
-    res.send(generatedText);
-  }).catch((error) => {
-    console.log(error);
-    res.status(500).send('Error generating search results');
-  });
-});
-
-// Set up a route to serve the frontend
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
-});
-
-// Start the server
-app.listen(port, () => {
-  console.log(`Server listening at http://localhost:${port}`);
-});
+userInterface.prompt()
+userInterface.on("line", async input => {
+  const response = await openAi.createChatCompletion({
+    model: "gpt-3.5-turbo",
+    messages: [{ role: "user", content: input }],
+  })
+  console.log(response.data.choices[0].message.content)
+  userInterface.prompt()
+})
